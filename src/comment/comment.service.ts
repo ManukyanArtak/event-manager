@@ -13,4 +13,11 @@ export class CommentService {
   async createComment(comment) {
     return await this.commentRepository.save(comment);
   }
+
+  async findComment(id) {
+    return await this.commentRepository.findOne({
+      where: { id },
+      relations: ['event.user'],
+    });
+  }
 }

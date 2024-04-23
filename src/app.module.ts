@@ -43,13 +43,13 @@ import { Comment } from './comment/comment.entity';
       imports: [ConfigModule],
       useFactory: (config: ConfigService) => ({
         transport: {
-          host: config.get('SES_HOST'),
-          port: config.get('SES_PORT'),
+          host: config.get('SMTP_HOST'),
+          port: config.get('SMTP_PORT'),
           ignoreTLS: false,
           secure: false,
           auth: {
-            user: config.get('SES_SMTP_USERNAME'),
-            pass: config.get('SES_SMTP_PASSWORD'),
+            user: config.get('SMTP_USERNAME'),
+            pass: config.get('SMTP_PASSWORD'),
           },
         },
         preview: false,

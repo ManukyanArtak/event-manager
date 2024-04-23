@@ -4,6 +4,8 @@ import { MailerService } from '@nestjs-modules/mailer';
 import {
   getVerificationEmailTemplate,
   VERIFICATION_EMAIL_SUBJECT,
+  getNewCommentEmailTemplate,
+  NEW_COMMENT_SUBJECT,
 } from './templates';
 import { OnEvent } from '@nestjs/event-emitter';
 
@@ -17,7 +19,7 @@ export class NotificationService {
     try {
       await this.mailerService.sendMail({
         to,
-        from: this.configService.get('SES_FROM_MAIL'),
+        from: this.configService.get('FROM_MAIL'),
         subject,
         html,
       });
@@ -32,11 +34,22 @@ export class NotificationService {
     await this.sendMail({ to, subject: VERIFICATION_EMAIL_SUBJECT, html });
   }
 
+  async sendNewCommentEmail(to, eventName, comment) {
+    const html = getNewCommentEmailTemplate(eventName, comment);
+    await this.sendMail({ to, subject: NEW_COMMENT_SUBJECT, html });
+  }
+
   @OnEvent('send.verification.notification')
-  async notifyUser(payload) {
+  async sendVerificationNotification(payload) {
     await this.sendVerificationEmail(payload.email, payload.code);
-    console.log(
-      `Hello user, ${payload.email} has been added to our menu. Enjoy.`,
+  }
+
+  @OnEvent('send.newComment.notification')
+  async sendNewCommentNotification(payload) {
+    await this.sendNewCommentEmail(
+      payload.email,
+      payload.eventName,
+      payload.comment,
     );
   }
 }

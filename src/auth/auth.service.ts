@@ -1,19 +1,20 @@
-import * as bcrypt from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
-import { jwtConstants } from './constants';
-import { UsersService } from '../users/users.service';
 import {
   ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { Request } from 'express';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
   signIn = async (email: string, password: string) => {
@@ -34,12 +35,12 @@ export class AuthService {
     const payload = { id: user.id, email: user.email };
 
     const accessToken = await this.jwtService.signAsync(payload, {
-      secret: jwtConstants.ACCESS_TOKEN,
+      secret: this.configService.get('ACCESS_TOKEN_KEY'),
       expiresIn: '1d',
     });
 
     const refreshToken = await this.jwtService.signAsync(payload, {
-      secret: jwtConstants.REFRESH_TOKEN,
+      secret: this.configService.get('REFRESH_TOKEN_KEY'),
       expiresIn: '365d',
     });
 
@@ -51,13 +52,13 @@ export class AuthService {
 
   refreshToken = async (token: string) => {
     const payload = await this.jwtService.verifyAsync(token, {
-      secret: jwtConstants.REFRESH_TOKEN,
+      secret: this.configService.get('REFRESH_TOKEN_KEY'),
     });
 
     const accessToken = await this.jwtService.signAsync(
-      { email: payload.email },
+      { email: payload.email, id: payload.id },
       {
-        secret: jwtConstants.ACCESS_TOKEN,
+        secret: this.configService.get('ACCESS_TOKEN_KEY'),
         expiresIn: '1d',
       },
     );
@@ -88,7 +89,7 @@ export class AuthService {
     }
     try {
       const payload = await this.jwtService.verifyAsync(token, {
-        secret: jwtConstants.ACCESS_TOKEN,
+        secret: this.configService.get('ACCESS_TOKEN_KEY'),
       });
       return payload;
     } catch {
