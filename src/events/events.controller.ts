@@ -11,15 +11,11 @@ import {
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { ApiAuthGuard } from '../auth/guards/api.auth.guard';
-import { CommentService } from '../comment/comment.service';
 import { Response } from 'express';
 
 @Controller('events')
 export class EventsController {
-  constructor(
-    private eventService: EventsService,
-    private commentService: CommentService,
-  ) {}
+  constructor(private eventService: EventsService) {}
 
   @UseGuards(ApiAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
@@ -37,7 +33,7 @@ export class EventsController {
   @Get(':id/comments')
   async getEventComments(@Param('id') id: number, @Res() res: Response) {
     try {
-      const comments = await this.commentService.getEventComments(id);
+      const comments = await this.eventService.findEvent(id);
       res.json(comments);
     } catch (e) {
       throw new BadRequestException();

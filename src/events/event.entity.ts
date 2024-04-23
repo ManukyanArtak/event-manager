@@ -7,9 +7,11 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 
 import { User } from '../users/user.entity';
+import { Comment } from '../comment/comment.entity';
 
 @Entity({ name: 'events' })
 @ObjectType()
@@ -19,7 +21,7 @@ export class Event {
   id: number;
 
   @Column({ type: 'integer', nullable: false })
-  @Field((type) => Int,{ nullable: false })
+  @Field((type) => Int, { nullable: false })
   user_id: number;
 
   @Column({ type: 'varchar' })
@@ -42,5 +44,8 @@ export class Event {
 
   @JoinColumn({ name: 'user_id' })
   @ManyToOne(() => User, (user) => user.events)
-  user: User; // Define the many-to-one relationship with User
+  user: User;
+
+  @OneToMany(() => Comment, (comment) => comment.event)
+  comments: Comment[];
 }

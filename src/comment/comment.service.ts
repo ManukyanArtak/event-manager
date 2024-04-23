@@ -13,15 +13,4 @@ export class CommentService {
   async createComment(comment) {
     return await this.commentRepository.save(comment);
   }
-
-  async getEventComments(eventId) {
-    return await this.commentRepository.find({
-      where: {
-        event_id: eventId,
-      },
-      order: {
-        id: 'ASC',
-      },
-    });
-  }
 }

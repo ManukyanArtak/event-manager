@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Event } from './event.model';
+import { Event } from './event.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -15,12 +15,19 @@ export class EventsService {
   }
 
   async createEvent(event) {
-    console.log(event)
     return await this.eventRepository.save(event);
   }
 
   async findEvent(id: number) {
-    return await this.eventRepository.findBy({ id });
+    return await this.eventRepository.findOne({
+      where: { id },
+      relations: ['comments'],
+      order: {
+        comments: {
+          id: 'ASC',
+        },
+      },
+    });
   }
 
   async getEvents() {

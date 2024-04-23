@@ -1,4 +1,4 @@
-import { Event } from './event.model';
+import { Event } from './event.entity';
 import { EventsService } from './events.service';
 import { Inject, UseGuards } from '@nestjs/common';
 import { EventCreateInput } from './graphql/event.input';

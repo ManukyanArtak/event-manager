@@ -7,7 +7,8 @@ import {
   Index,
   OneToMany,
 } from 'typeorm';
-import { Event } from '../events/event.model';
+import { Event } from '../events/event.entity';
+import { Comment } from '../comment/comment.entity';
 
 export enum UserGender {
   MALE = 1,
@@ -62,5 +63,8 @@ export class User {
   updated_at: Date;
 
   @OneToMany(() => Event, (event) => event.user)
-  events: Event[]; // Define the one-to-many relationship with Event
+  events: Event[];
+
+  @OneToMany(() => Comment, (comment) => comment.user)
+  comments: Comment[];
 }
