@@ -1,5 +1,5 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
-import {isExist} from "../../validation/isExist/isExist";
+import { isExist } from '../../validation/isExist/isExist';
 
 export class LoginDto {
   @IsNotEmpty()

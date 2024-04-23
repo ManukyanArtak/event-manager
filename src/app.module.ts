@@ -12,7 +12,9 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { NotificationModule } from './notification/notification.module';
 import { IsUniqueConstraint } from './validation/isUnique/isUniqueConstraint';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import {IsExistConstraint} from "./validation/isExist/isExistConstraint";
+import { IsExistConstraint } from './validation/isExist/isExistConstraint';
+import { CommentModule } from './comment/comment.module';
+import { Comment } from './comment/comment.entity';
 
 @Module({
   imports: [
@@ -27,7 +29,7 @@ import {IsExistConstraint} from "./validation/isExist/isExistConstraint";
           username: configService.get('USERNAME'),
           password: configService.get('PASSWORD'),
           database: configService.get('DATABASE'),
-          entities: [Event, User],
+          entities: [Event, User, Comment],
           synchronize: true,
         }) as TypeOrmModuleOptions,
       inject: [ConfigService],
@@ -59,6 +61,7 @@ import {IsExistConstraint} from "./validation/isExist/isExistConstraint";
     UsersModule,
     AuthModule,
     NotificationModule,
+    CommentModule,
   ],
   controllers: [],
   providers: [IsUniqueConstraint, IsExistConstraint],
