@@ -12,10 +12,14 @@ import {
 import { EventsService } from './events.service';
 import { ApiAuthGuard } from '../auth/guards/api.auth.guard';
 import { Response } from 'express';
+import { CommentService } from '../comment/comment.service';
 
 @Controller('events')
 export class EventsController {
-  constructor(private eventService: EventsService) {}
+  constructor(
+    private eventService: EventsService,
+    private commentService: CommentService,
+  ) {}
 
   @UseGuards(ApiAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
@@ -33,9 +37,11 @@ export class EventsController {
   @Get(':id/comments')
   async getEventComments(@Param('id') id: number, @Res() res: Response) {
     try {
-      const comments = await this.eventService.findEvent(id);
+      const comments = await this.commentService.findEventComments(id);
+
       res.json(comments);
     } catch (e) {
+      console.log(e);
       throw new BadRequestException();
     }
   }
